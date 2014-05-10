@@ -3,7 +3,6 @@ import csv
 import sys
 import time
 import pywikibot
-from pprint import pprint
 
 zurich_districts = {
     '111': "Q382903",
@@ -42,18 +41,19 @@ zurich_districts = {
     '21': "Q642353",
 }
 
+
 def fetch_file(url, filename=None):
     '''
     Fetching a file and save on disk
     '''
-    if filename is None: 
+    if filename is None:
         filename = 'zuerich_population.csv'
     f = urllib2.urlopen(url)
     data = f.read()
     with open(filename, "wb") as local_file:
         local_file.write(data)
     return filename
-    
+
 
 def read_file(path):
     '''
@@ -66,21 +66,25 @@ def read_file(path):
             rows.append(row_dict)
     return rows
 
+
 def load_item_from_repo(repo, item_id):
     item = pywikibot.ItemPage(repo, item_id)
     item.get()
     return item
 
+
 def existing_claim_from_year(item, year):
     try:
         claims = item.claims['P1082']
+        time_str = pywikibot.WbTime(year=year).toTimestr()
         for claim in claims:
             for qualifier_value in claim.qualifiers['P585']:
-                if (qualifier_value.getTarget().toTimestr() == pywikibot.WbTime(year=year).toTimestr()):
+                if (qualifier_value.getTarget().toTimestr() == time_str):
                     return claim
     except KeyError:
         pass
     return None
+
 
 # connect to WikiData
 site = pywikibot.Site("wikidata", "wikidata")
@@ -88,10 +92,10 @@ repo = site.data_repository()
 
 # download and read file
 CSV_FILE_URL = 'http://data.stadt-zuerich.ch/ogd.pV1VA3r.link'
-path = fetch_file(CSV_FILE_URL);
+path = fetch_file(CSV_FILE_URL)
 rows = read_file(path)
 
-population_prop_id = 'P1082' 
+population_prop_id = 'P1082'
 time_prop_id = 'P585'
 url_prop_id = 'P854'
 
@@ -112,7 +116,8 @@ for district in rows:
                 # population claim
                 population_value = district['wbev_%d' % year]
                 population_claim = pywikibot.Claim(repo, population_prop_id)
-                population_claim.setTarget(pywikibot.WbQuantity(amount=population_value))
+                population_claim.setTarget(
+                    pywikibot.WbQuantity(amount=population_value))
                 item.addClaim(population_claim)
 
                 # time qualifier
@@ -125,12 +130,14 @@ for district in rows:
                 source = pywikibot.Claim(repo, url_prop_id)
                 source.setTarget(CSV_FILE_URL)
                 population_claim.addSource(source)
-                print "Added population claim to %s for year %d" % (item_id, year)
+                print ("Added population claim "
+                       "to %s for year %d") % (item_id, year)
 
                 # when adding a new claim wait for 30s to make the API happy
-                time.sleep(30)
+                time.sleep(15)
             else:
-                print "Population claim already exists on %s for year %d, skipping" % (item_id, year)
+                print ("Population claim already exists "
+                       "on %s for year %d, skipping") % (item_id, year)
     except pywikibot.data.api.APIError as e:
         print >> sys.stderr, "API Error: %s" % (e)
         break
