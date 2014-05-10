@@ -1,2 +1,5 @@
 pywikibot-core
 zuerich_population.csv
+php/zurich_population.csv
+php/vendor
+php/composer.phar

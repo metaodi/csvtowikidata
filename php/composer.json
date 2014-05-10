@@ -1,0 +1,14 @@
+{
+    "name": "metaodi/csvtowikidata",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stefan Oderbolz",
+            "email": "odi@readmore.ch"
+        }
+    ],
+    "minimum-stability":"dev",
+    "require": {
+        "addwiki/wikibase-api": "dev-master"
+    }
+}
