@@ -1,5 +1,6 @@
 import urllib2
 import csv
+import pywikibot
 from pprint import pprint
 
 CSV_FILE_URL = 'http://data.stadt-zuerich.ch/ogd.pV1VA3r.link'
@@ -68,3 +69,22 @@ path = fetch_file();
 rows = read_file(path)
 
 pprint(rows)
+
+site = pywikibot.Site("wikidata", "wikidata")
+repo = site.data_repository()
+item = pywikibot.ItemPage(repo, "Q642353")
+
+
+population_claim = pywikibot.Claim(repo, 'P1082')
+population_claim.setTarget(pywikibot.WbQuantity(amount=15937))
+item.addClaim(population_claim)
+
+# qualifier = pywikibot.Claim(repo, 'P585')
+# year = pywikibot.WbTime(year=2013)
+# qualifier.setTarget(year)
+# population_claim.addQualifier(qualifier)
+
+
+# for district_id, item_id in zurich_districts.iteritems():
+#     item = pywikibot.ItemPage(repo, item_id)
+
