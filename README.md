@@ -8,3 +8,7 @@ git clone --recursive https://gerrit.wikimedia.org/r/pywikibot/core.git pywikibo
 cd pywikibot-core
 sudo python setup.py install
 ```
+
+**NOTE:**
+This script currently uses a not yet merged feature of pywikibot in order to use unit-less quantities.
+See https://gerrit.wikimedia.org/r/#/c/132629 for details
