@@ -114,7 +114,7 @@ for district in rows:
             population_claim = existing_claim_from_year(item, year)
             if (population_claim is None):
                 # population claim
-                population_value = district['wbev_%d' % year]
+                population_value = district[f'wbev_{year}']
                 population_claim = pywikibot.Claim(repo, population_prop_id)
                 population_claim.setTarget(
                     pywikibot.WbQuantity(amount=population_value))
@@ -130,14 +130,12 @@ for district in rows:
                 source = pywikibot.Claim(repo, url_prop_id)
                 source.setTarget(CSV_FILE_URL)
                 population_claim.addSource(source)
-                print ("Added population claim "
-                       "to %s for year %d") % (item_id, year)
+                print(f"Added population claim to {item_id} for year {year}")
 
                 # when adding a new claim wait some time to make the API happy
                 time.sleep(15)
             else:
-                print ("Population claim already exists "
-                       "on %s for year %d, skipping") % (item_id, year)
+                print(f"Population claim already exists on {item_id} for year {year}, skipping")
     except pywikibot.data.api.APIError as e:
-        print >> sys.stderr, "API Error: %s" % (e)
+        print(f"API Error: {e}", file=sys.stderr)
         break
